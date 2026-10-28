@@ -281,7 +281,7 @@ button { color: inherit; }
 .blog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
 .article-page { padding-bottom: 80px; }
-.article-header { max-width: 900px; margin: 0 auto; padding: 32px 32px 31px; }
+.article-header { width: min(1050px, calc(100% - 64px)); margin: 0 auto; padding: 32px 0 31px; }
 .article-category { display: inline-flex; padding: 5px 9px; border: 1px solid rgba(0,229,255,.26); border-radius: 3px; background: rgba(0,229,255,.055); color: var(--cyan); font-size: 9px; font-weight: 700; }
 .article-header h1 { max-width: 790px; margin: 16px 0 9px; font-family: var(--display); font-size: clamp(37px, 5.2vw, 57px); font-weight: 750; letter-spacing: -.035em; line-height: 1.03; }
 .article-header > p { max-width: 720px; margin: 0; color: #a0aab6; font-size: 14px; }
@@ -438,7 +438,7 @@ button { color: inherit; }
   .article-grid-related .article-card { display: grid; grid-template-columns: 34% 1fr; }
   .category-tabs { gap: 6px; }
   .category-tab { padding: 7px 9px; font-size: 9px; }
-  .article-header { padding: 25px 20px 24px; }
+  .article-header { width: calc(100% - 40px); padding: 25px 0 24px; }
   .article-header h1 { margin-top: 12px; font-size: clamp(35px, 8vw, 48px); }
   .article-header > p { font-size: 12px; }
   .article-byline { flex-wrap: wrap; gap: 7px; font-size: 8px; }
@@ -811,11 +811,10 @@ button { color: inherit; }
 .game-art-whiteout-survival.game-cover, .game-art-whiteout-survival.feed-game-mark, .game-art-whiteout-survival.article-art { background-color: #244052; background-image: radial-gradient(ellipse at 73% 26%, rgba(171,225,249,.85), transparent 17%), radial-gradient(ellipse at 21% 79%, rgba(72,139,177,.62), transparent 35%), linear-gradient(135deg, #2c5366, #18212d 70%, #0a1119); }
 .game-art-roblox { --art-highlight: #ff7771; }
 .game-art-roblox.game-cover, .game-art-roblox.feed-game-mark, .game-art-roblox.article-art { background-color: #482427; background-image: radial-gradient(ellipse at 73% 25%, rgba(255,120,112,.82), transparent 18%), radial-gradient(ellipse at 20% 75%, rgba(255,89,80,.54), transparent 36%), linear-gradient(135deg, #48262a, #1c1820 68%, #0b0c11); }
-.game-art-rise-of-kingdoms, .game-art-clash-of-clans, .game-art-lords-mobile, .game-art-evony { --art-highlight: #edbd6c; }
+.game-art-rise-of-kingdoms, .game-art-clash-of-clans, .game-art-lords-mobile { --art-highlight: #edbd6c; }
 .game-art-rise-of-kingdoms.game-cover, .game-art-rise-of-kingdoms.feed-game-mark, .game-art-rise-of-kingdoms.article-art,
 .game-art-clash-of-clans.game-cover, .game-art-clash-of-clans.feed-game-mark, .game-art-clash-of-clans.article-art,
-.game-art-lords-mobile.game-cover, .game-art-lords-mobile.feed-game-mark, .game-art-lords-mobile.article-art,
-.game-art-evony.game-cover, .game-art-evony.feed-game-mark, .game-art-evony.article-art { background-color: #49351f; background-image: radial-gradient(ellipse at 73% 26%, rgba(250,206,125,.86), transparent 17%), radial-gradient(ellipse at 20% 75%, rgba(177,111,51,.65), transparent 36%), linear-gradient(135deg, #49351f, #211b1b 68%, #0d0e13); }
+.game-art-lords-mobile.game-cover, .game-art-lords-mobile.feed-game-mark, .game-art-lords-mobile.article-art { background-color: #49351f; background-image: radial-gradient(ellipse at 73% 26%, rgba(250,206,125,.86), transparent 17%), radial-gradient(ellipse at 20% 75%, rgba(177,111,51,.65), transparent 36%), linear-gradient(135deg, #49351f, #211b1b 68%, #0d0e13); }
 .game-art-summoners-war, .game-art-dislyte, .game-art-honkai-impact-3rd { --art-highlight: #c390ec; }
 .game-art-summoners-war.game-cover, .game-art-summoners-war.feed-game-mark, .game-art-summoners-war.article-art,
 .game-art-dislyte.game-cover, .game-art-dislyte.feed-game-mark, .game-art-dislyte.article-art,
@@ -829,6 +828,15 @@ button { color: inherit; }
 .game-art-clash-royale.game-cover, .game-art-clash-royale.feed-game-mark, .game-art-clash-royale.article-art { background-color: #514021; background-image: radial-gradient(ellipse at 72% 25%, rgba(255,218,122,.88), transparent 16%), radial-gradient(ellipse at 18% 78%, rgba(214,126,69,.65), transparent 35%), linear-gradient(135deg, #574128, #24202b 68%, #101017); }
 .game-art-wuthering-waves .game-art, .game-art-raid-shadow-legends .game-art { color: transparent; }
 
+.game-art.has-photo {
+  background-image: linear-gradient(to top, rgba(8,10,14,.82), rgba(8,10,14,.08) 62%), var(--photo) !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+.game-art.has-photo::before, .game-art.has-photo::after, .game-art.has-photo > i { display: none !important; }
+.game-cover.has-photo > span, .game-art.has-photo .article-art-mark { display: none; }
+.article-art.has-photo { background-image: linear-gradient(to top, rgba(8,10,14,.92), rgba(8,10,14,.12) 70%), var(--photo) !important; }
+.article-art.has-photo .article-art-title { text-shadow: 0 2px 10px rgba(0,0,0,.85); }
 .code-status-cell { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .code-status-cell .status-badge { margin: 0; }
 .local-vote { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
@@ -907,6 +915,7 @@ button { color: inherit; }
 .starter-benefits svg { width: 15px; height: 15px; padding: 2px; border-radius: 50%; background: rgba(0,230,118,.13); color: #00f08a; }
 .starter-fineprint { color: #d3ddcf; }
 .status-active { border: 1px solid rgba(0,255,128,.55); background: rgba(0,255,128,.17); color: #00ff83; box-shadow: 0 0 12px rgba(0,255,128,.12); }
+.empty-codes { padding: 22px 16px; color: #a0aab6; text-align: center; }
 .status-new { border: 1px solid rgba(0,230,118,.55); background: rgba(0,230,118,.18); color: #79ffb1; box-shadow: 0 0 10px rgba(0,230,118,.1); }
 .status-new-player { border: 1px solid rgba(175,122,255,.62); background: rgba(139,83,238,.22); color: #dbbaff; box-shadow: 0 0 10px rgba(161,116,255,.12); }
 .status-expired { border: 1px solid rgba(177,187,198,.34); background: rgba(141,151,164,.13); color: #d2d7de; box-shadow: none; }

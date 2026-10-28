@@ -1,5 +1,5 @@
 (function () {
-  const { games, codeSets, articleData } = window.LOOTVAULT_DATA;
+  const { games, codeSets, codeNotes, codesCheckedOn, articleData } = window.LOOTVAULT_DATA;
   const app = document.querySelector("#app");
   const toast = document.querySelector("#toast");
   let toastTimer;
@@ -55,25 +55,39 @@
   const codeVoteKey = (game, entry) => `${game.slug}:${entry.code}`;
   const voteControls = (game, entry) => {
     const vote = readStoredObject(voteStorageKey)[codeVoteKey(game, entry)];
-    return `<span class="local-vote" data-vote-group="${escapeHtml(codeVoteKey(game, entry))}" aria-label="Local vote for this sample code">
+    return `<span class="local-vote" data-vote-group="${escapeHtml(codeVoteKey(game, entry))}" aria-label="Local vote for this code">
       <button class="vote-button${vote === "up" ? " vote-up-selected" : ""}" type="button" data-code-vote="${escapeHtml(codeVoteKey(game, entry))}" data-vote="up" aria-label="This code worked" aria-pressed="${vote === "up"}">${icon("thumbUp", 14)}</button>
       <button class="vote-button${vote === "down" ? " vote-down-selected" : ""}" type="button" data-code-vote="${escapeHtml(codeVoteKey(game, entry))}" data-vote="down" aria-label="This code did not work" aria-pressed="${vote === "down"}">${icon("thumbDown", 14)}</button>
       <small>${vote ? "Your vote saved" : "Your vote"} · this device</small>
     </span>`;
   };
-  const gameArt = (game, className = "game-cover") => `<span class="${className} game-art game-art-${escapeHtml(game.slug)}" style="--game-color:${game.color}" role="img" aria-label="${escapeHtml(game.name)} artwork"><i></i></span>`;
-  const gameMark = (game, className = "feed-game-mark") => `<span class="${className} game-art game-art-${escapeHtml(game.slug)}" style="--game-color:${game.color}" aria-hidden="true"></span>`;
-  const sampleCount = (game) => codeEntries(game).length;
+  const gamePhotoCounts = { "afk-journey": 6, "raid-shadow-legends": 7, "rise-of-kingdoms": 4, "genshin-impact": 5, "honkai-star-rail": 5, "roblox": 5, "whiteout-survival": 5, "wuthering-waves": 5, "zenless-zone-zero": 4, "lords-mobile": 4, "state-of-survival": 4, "mobile-legends": 4, "summoners-war": 4, "pokemon-go": 3, "call-of-duty-mobile": 4, "clash-of-clans": 4, "clash-royale": 4, "dislyte": 4 };
+  const photoExt = { "clash-royale-3": "webp", "afk-journey": "jpg", "raid-shadow-legends": "jpg", "rise-of-kingdoms": "jpg" };
+  const photoAttrs = (game, index = 0) => {
+    const count = game && gamePhotoCounts[game.slug];
+    if (!count) return { cls: "", style: "" };
+    return { cls: " has-photo", style: `;--photo:url('/images/games/${game.slug}-${(index % count) + 1}.${photoExt[game.slug + "-" + ((index % count) + 1)] || photoExt[game.slug] || "png"}')` };
+  };
+  const gameArt = (game, className = "game-cover") => {
+    const photo = photoAttrs(game);
+    return `<span class="${className} game-art game-art-${escapeHtml(game.slug)}${photo.cls}" style="--game-color:${game.color}${photo.style}" role="img" aria-label="${escapeHtml(game.name)} artwork"><i></i></span>`;
+  };
+  const gameMark = (game, className = "feed-game-mark") => {
+    const photo = photoAttrs(game);
+    return `<span class="${className} game-art game-art-${escapeHtml(game.slug)}${photo.cls}" style="--game-color:${game.color}${photo.style}" aria-hidden="true"></span>`;
+  };
+  const sampleCount = (game) => codeEntries(game).filter((entry) => entry.status !== "expired").length;
   const gameCard = (game, compact = false) => `
     <a class="game-card${compact ? " game-card-compact" : ""}" href="${gameUrl(game)}">
       ${gameArt(game)}
-      <span class="game-card-copy"><strong>${escapeHtml(game.name)}</strong><small>${escapeHtml(game.genre)}</small><span class="game-card-count">${sampleCount(game)} demo ${sampleCount(game) === 1 ? "entry" : "entries"} <i></i></span></span>
+      <span class="game-card-copy"><strong>${escapeHtml(game.name)}</strong><small>${escapeHtml(game.genre)}</small><span class="game-card-count">${sampleCount(game)} active ${sampleCount(game) === 1 ? "code" : "codes"} <i></i></span></span>
       <span class="card-arrow">${icon("arrow", 16)}</span>
     </a>`;
   const articleCard = (article, featured = false) => {
     const game = getGame(article.game);
+    const photo = photoAttrs(game, article.slug.includes("tier") ? 1 : 2);
     return `<a class="article-card${featured ? " article-card-featured" : ""}" href="${articleUrl(article)}">
-      <span class="article-art${game ? ` game-art game-art-${escapeHtml(game.slug)}` : ""}" style="--game-color:${game ? game.color : "#00e5ff"}">
+      <span class="article-art${game ? ` game-art game-art-${escapeHtml(game.slug)}` : ""}${photo.cls}" style="--game-color:${game ? game.color : "#00e5ff"}${photo.style}">
         <span class="article-art-tag">${escapeHtml(article.category)}</span><span class="article-art-mark" aria-hidden="true"></span>
         <span class="article-art-title">${escapeHtml(game ? game.name : "LootVault")}</span>
       </span>
@@ -83,31 +97,26 @@
     </a>`;
   };
   const codeEntries = (game) => {
-    const provided = codeSets[game.slug];
-    if (provided) return provided;
-    const safeInitials = game.initials.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
-    return [{ code: `DEMO-${safeInitials}-26`, reward: "Sample reward — replace with a verified offer", status: "active", type: "sample" }];
+    return codeSets[game.slug] || [];
   };
   const codeRow = (entry, game) => {
     const status = entry.status === "expired"
-      ? '<span class="status-badge status-expired">Expired sample</span>'
+      ? '<span class="status-badge status-expired">Expired</span>'
       : entry.type === "new-only"
-        ? '<span class="status-badge status-new-player">New player sample</span>'
+        ? '<span class="status-badge status-new-player">New players only</span>'
         : entry.status === "new"
-          ? '<span class="status-badge status-new">New sample</span>'
-          : entry.verified
-            ? '<span class="status-badge status-active">Verified active</span>'
-          : '<span class="status-badge status-sample">Sample only</span>';
+          ? '<span class="status-badge status-new">New</span>'
+          : '<span class="status-badge status-active">Active</span>';
     const isNewPlayer = entry.type === "new-only";
     const configuredAffiliate = game.affiliateUrl;
     const action = isNewPlayer && configuredAffiliate
       ? `<a class="button button-outline button-small" href="${escapeHtml(configuredAffiliate)}" rel="sponsored nofollow" data-affiliate="${escapeHtml(game.slug)}">Claim offer ${icon("arrow", 14)}</a>`
       : entry.status === "expired"
         ? '<span class="expired-copy">Unavailable</span>'
-        : `<button class="copy-button copy-button-large" type="button" data-copy="${escapeHtml(entry.code)}" aria-label="Copy sample ${escapeHtml(entry.code)}">${icon("copy", 15)} COPY CODE</button>`;
+        : `<button class="copy-button copy-button-large" type="button" data-copy="${escapeHtml(entry.code)}" aria-label="Copy ${escapeHtml(entry.code)}">${icon("copy", 15)} COPY CODE</button>`;
     return `<tr class="${entry.status === "expired" ? "row-expired" : ""}">
       <td data-label="CODE"><span class="code-value">${escapeHtml(entry.code)}</span></td>
-      <td data-label="EXAMPLE REWARD">${escapeHtml(entry.reward)}</td>
+      <td data-label="REWARD">${escapeHtml(entry.reward)}</td>
       <td data-label="STATUS"><span class="code-status-cell">${status}${voteControls(game, entry)}</span></td>
       <td data-label="ACTION">${action}</td>
     </tr>`;
@@ -117,7 +126,7 @@
     if (!favorites.length) return "";
     return `<section class="my-vault" id="my-vault" aria-label="My Vault saved games">
       <div class="my-vault-heading"><div><span class="vault-star">${icon("star", 16)}</span><span><strong>MY VAULT</strong><small>Your saved games, ready when you are.</small></span></div><span class="vault-count">${favorites.length} SAVED</span></div>
-      <div class="my-vault-games">${favorites.map((game) => `<div class="vault-game"><a href="${gameUrl(game)}">${gameArt(game, "vault-game-art")}<span><strong>${escapeHtml(game.name)}</strong><small>${sampleCount(game)} demo ${sampleCount(game) === 1 ? "entry" : "entries"}</small></span></a><button type="button" class="vault-remove" data-remove-favorite="${escapeHtml(game.slug)}" aria-label="Remove ${escapeHtml(game.name)} from My Vault">${icon("close", 15)}</button></div>`).join("")}</div>
+      <div class="my-vault-games">${favorites.map((game) => `<div class="vault-game"><a href="${gameUrl(game)}">${gameArt(game, "vault-game-art")}<span><strong>${escapeHtml(game.name)}</strong><small>${sampleCount(game)} active ${sampleCount(game) === 1 ? "code" : "codes"}</small></span></a><button type="button" class="vault-remove" data-remove-favorite="${escapeHtml(game.slug)}" aria-label="Remove ${escapeHtml(game.name)} from My Vault">${icon("close", 15)}</button></div>`).join("")}</div>
     </section>`;
   };
   const recommendedGames = (game) => {
@@ -212,7 +221,7 @@
     const featuredCodeRows = games.filter((game) => game.popular).slice(0, 5).map((game) => {
       const entry = codeEntries(game).find((candidate) => candidate.status !== "expired");
       return { game, entry };
-    });
+    }).filter(({ entry }) => entry);
     app.innerHTML = shell(`
       ${myVaultPanel()}
       <section class="hero">
@@ -227,19 +236,19 @@
           </div>
           <div class="hero-proof"><span>${icon("check", 15)} 20+ games covered</span><span>${icon("check", 15)} Player-first guides</span></div>
         </div>
-        <aside class="hero-codefeed" aria-label="Sample game codes">
-          <div class="feed-heading"><span><i></i> THE DROP ZONE</span><span class="feed-sample">SAMPLE</span></div>
+        <aside class="hero-codefeed" aria-label="Fresh game codes">
+          <div class="feed-heading"><span><i></i> THE DROP ZONE</span><span class="feed-sample">LIVE</span></div>
           <h2>Codes on the <span>radar.</span></h2>
-          <p>Example entries from popular games</p>
+          <p>Fresh codes · checked ${escapeHtml(codesCheckedOn)}</p>
           <div class="feed-list">${featuredCodeRows.slice(0, 3).map(({ game, entry }) => `
             <a class="feed-row" href="${gameUrl(game)}">
               ${gameMark(game)}
               <span class="feed-code-copy"><strong>${escapeHtml(game.name)}</strong><code>${escapeHtml(entry.code)}</code></span>
               <span class="feed-row-arrow">${icon("arrow", 15)}</span>
             </a>`).join("")}</div>
-          <a class="feed-footer-link" href="/games/">Browse all 20 games ${icon("arrow", 14)}</a>
+          <a class="feed-footer-link" href="/games/">          Browse all ${games.length} games ${icon("arrow", 14)}</a>
         </aside>
-        <div class="hero-bottom"><span>SCROLL TO EXPLORE</span><span class="hero-bottom-line"></span><span>20 GAMES · SAMPLE DATA</span></div>
+                  <div class="hero-bottom"><span>SCROLL TO EXPLORE</span><span class="hero-bottom-line"></span><span>${games.length} GAMES · CODES CHECKED ${escapeHtml(codesCheckedOn.toUpperCase())}</span></div>
       </section>
       <section class="section how-it-works" aria-labelledby="how-it-works-title">
         <div class="how-it-works-heading">
@@ -259,7 +268,7 @@
               <span class="how-step-number">02</span>
               <div class="how-status-art"><span>ENTRY DETAILS</span><strong><i></i> Reward &amp; status labels</strong><small>Check eligibility before redeeming</small></div>
             </div>
-            <div class="how-step-copy"><span>KNOW BEFORE YOU CLAIM</span><h3>Check the details</h3><p>Review the reward, eligibility, and status. Demo entries are clearly labeled—not passed off as live codes.</p></div>
+            <div class="how-step-copy"><span>KNOW BEFORE YOU CLAIM</span><h3>Check the details</h3><p>Review the reward, eligibility, and status before you redeem. Every list shows when it was last checked.</p></div>
           </article>
           <article class="how-step">
             <div class="how-step-visual how-step-visual-claim">
@@ -275,15 +284,15 @@
         <div class="game-grid">${popular.map((game) => gameCard(game)).join("")}</div>
       </section>
       <section class="section code-desk-section">
-        <div class="section-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> THE CODE DESK</div><h2>Reward tracker <span>preview</span></h2></div><span class="sample-label">SAMPLE ENTRIES · NOT LIVE</span></div>
-        <div class="code-table-wrap home-code-table-wrap"><table class="code-table home-code-table"><thead><tr><th>GAME / CODE</th><th>EXAMPLE REWARD</th><th>STATUS / VOTE</th><th>ACTION</th></tr></thead><tbody>${featuredCodeRows.map(({ game, entry }) => `<tr><td data-label="GAME / CODE"><a class="home-code-game" href="${gameUrl(game)}">${gameMark(game)}<span>${escapeHtml(game.name)}<code>${escapeHtml(entry.code)}</code></span></a></td><td data-label="EXAMPLE REWARD">${escapeHtml(entry.reward)}</td><td data-label="STATUS / VOTE"><span class="code-status-cell"><span class="status-badge status-sample">Sample only</span>${voteControls(game, entry)}</span></td><td data-label="ACTION"><button class="copy-button copy-button-large" type="button" data-copy="${escapeHtml(entry.code)}">${icon("copy", 15)} COPY CODE</button></td></tr>`).join("")}</tbody></table></div>
-        <p class="code-desk-note">All entries above are examples, not current or verified game codes. Always check official game channels.</p>
+        <div class="section-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> THE CODE DESK</div><h2>Reward tracker <span>preview</span></h2></div>        <span class="sample-label">CHECKED ${escapeHtml(codesCheckedOn.toUpperCase())}</span></div>
+                <div class="code-table-wrap home-code-table-wrap"><table class="code-table home-code-table"><thead><tr><th>GAME / CODE</th><th>REWARD</th><th>STATUS / VOTE</th><th>ACTION</th></tr></thead><tbody>${featuredCodeRows.map(({ game, entry }) => `<tr><td data-label="GAME / CODE"><a class="home-code-game" href="${gameUrl(game)}">${gameMark(game)}<span>${escapeHtml(game.name)}<code>${escapeHtml(entry.code)}</code></span></a></td><td data-label="REWARD">${escapeHtml(entry.reward)}</td><td data-label="STATUS / VOTE"><span class="code-status-cell"><span class="status-badge ${entry.status === "new" ? "status-new" : "status-active"}">${entry.status === "new" ? "New" : "Active"}</span>${voteControls(game, entry)}</span></td><td data-label="ACTION"><button class="copy-button copy-button-large" type="button" data-copy="${escapeHtml(entry.code)}">${icon("copy", 15)} COPY CODE</button></td></tr>`).join("")}</tbody></table></div>
+        <p class="code-desk-note">Codes are compiled from publisher announcements and public trackers and last checked ${escapeHtml(codesCheckedOn)}. They can expire at any time, so redeem them early.</p>
       </section>
       <section class="section latest-section">
         <div class="section-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> THE PLAYER'S PLAYBOOK</div><h2>Guides worth <span>your time</span></h2></div><a class="text-link" href="/blog/">Explore all guides ${icon("arrow", 16)}</a></div>
         <div class="article-grid">${latest.map((article, index) => articleCard(article, index === 0)).join("")}</div>
       </section>
-      <section class="affiliate-banner"><div class="affiliate-symbol">${icon("spark", 26)}</div><div><span class="eyebrow">YOUR NEXT DROP STARTS HERE</span><h2>Find your game. <span>Find your next move.</span></h2><p>Jump into the full directory for game-specific reward pages and player guides. Sample listings are always labeled.</p></div><a class="button button-primary" href="/games/">BROWSE ALL GAMES ${icon("arrow", 15)}</a></section>
+      <section class="affiliate-banner"><div class="affiliate-symbol">${icon("spark", 26)}</div><div><span class="eyebrow">YOUR NEXT DROP STARTS HERE</span><h2>Find your game. <span>Find your next move.</span></h2><p>Jump into the full directory for game-specific reward pages and player guides. Code lists show when they were last checked.</p></div><a class="button button-primary" href="/games/">BROWSE ALL GAMES ${icon("arrow", 15)}</a></section>
       <section class="section home-directory"><div class="section-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> BUILT FOR EVERY PLAYER</div><h2>Your games. <span>Your next move.</span></h2></div><a class="text-link" href="/games/">Browse directory ${icon("arrow", 16)}</a></div><p>From RPGs and Roblox experiences to mobile strategy, find your game and get straight to what matters.</p></section>
     `);
     bindHomeSearch();
@@ -360,21 +369,21 @@
       : signupUrl
         ? ["Official Publisher Destination", "Direct Account & Game Download", "Verified Free-to-Play Access"]
         : ["Game-specific player guides", "Quick access to game codes", "Beginner-friendly tips"];
-    updateMeta(`${game.name} codes & rewards`, `Explore the ${game.name} reward page and related player guides. Sample listings are not live-verified.`);
+    updateMeta(`${game.name} codes & rewards`, `Working ${game.name} codes and rewards, last checked ${codesCheckedOn}. Redeem steps, expired codes and related player guides.`);
     const affiliateCta = `<a class="button button-gold starter-cta" href="${escapeHtml(ctaUrl)}"${game.affiliateUrl ? ' rel="sponsored nofollow" data-affiliate="' + escapeHtml(game.slug) + '"' : signupUrl ? ' target="_blank" rel="noopener noreferrer"' : ""}>${ctaText} ${icon("arrow", 15)}</a>`;
     app.innerHTML = shell(`
       <div class="breadcrumbs"><a href="/">Home</a><span>/</span><a href="/games/">Games</a><span>/</span><span>${escapeHtml(game.name)}</span></div>
-      <section class="game-page-hero">${gameArt(game, "game-cover game-cover-large")}<div class="game-page-title"><div class="eyebrow"><span class="eyebrow-line"></span> ${escapeHtml(game.genre.toUpperCase())}</div><div class="game-heading-row"><h1>${escapeHtml(game.name)} <span>Codes</span></h1><button class="vault-toggle${isSaved ? " vault-toggle-saved" : ""}" type="button" data-vault-toggle="${escapeHtml(game.slug)}" aria-pressed="${isSaved}">${icon("star", 16)} <span>${isSaved ? "SAVED TO MY VAULT" : "ADD TO MY VAULT"}</span></button></div><p>${escapeHtml(game.platform)} <i>·</i> Independent player resource</p></div><div class="verified-pill verified-demo">EDITORIAL STATUS<br><small>Sample data · not verified</small></div></section>
-      <div class="sample-notice"><span>!</span><p><strong>Sample page, not live code data.</strong> The codes and rewards below are examples for this prototype. Check official game channels before trying a code; no active offer is being promised.</p></div>
+      <section class="game-page-hero">${gameArt(game, "game-cover game-cover-large")}<div class="game-page-title"><div class="eyebrow"><span class="eyebrow-line"></span> ${escapeHtml(game.genre.toUpperCase())}</div><div class="game-heading-row"><h1>${escapeHtml(game.name)} <span>Codes</span></h1><button class="vault-toggle${isSaved ? " vault-toggle-saved" : ""}" type="button" data-vault-toggle="${escapeHtml(game.slug)}" aria-pressed="${isSaved}">${icon("star", 16)} <span>${isSaved ? "SAVED TO MY VAULT" : "ADD TO MY VAULT"}</span></button></div><p>${escapeHtml(game.platform)} <i>·</i> Independent player resource</p></div>      <div class="verified-pill">CODES CHECKED<br><small>${escapeHtml(codesCheckedOn)}</small></div></section>
+            <div class="sample-notice"><span>i</span><p><strong>Last checked ${escapeHtml(codesCheckedOn)}.</strong> ${codeNotes[game.slug] ? escapeHtml(codeNotes[game.slug]) : "Codes are compiled from publisher announcements and public trackers. They can expire or hit their redemption limit without notice."}</p></div>
       <div class="game-page-layout"><div class="game-main-column">
-        <section class="code-panel" id="active-codes"><div class="panel-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> REWARD TRACKER</div><h2>Code examples <span>(${activeCodes.length})</span></h2></div><span class="sample-label">NOT VERIFIED</span></div>
-          <div class="code-table-wrap"><table class="code-table"><thead><tr><th>CODE</th><th>EXAMPLE REWARD</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>${activeCodes.map((entry) => codeRow(entry, game)).join("")}</tbody></table></div>
+        <section class="code-panel" id="active-codes"><div class="panel-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span>         REWARD TRACKER</div><h2>Active codes <span>(${activeCodes.length})</span></h2></div><span class="sample-label">CHECKED ${escapeHtml(codesCheckedOn.toUpperCase())}</span></div>
+                  <div class="code-table-wrap"><table class="code-table"><thead><tr><th>CODE</th><th>REWARD</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>${activeCodes.length ? activeCodes.map((entry) => codeRow(entry, game)).join("") : '<tr><td colspan="4" class="empty-codes">No redeemable codes right now. Check back soon.</td></tr>'}</tbody></table></div>
           <div class="how-to"><h3>How to redeem a code</h3><ol><li>Open the official ${escapeHtml(game.name)} game or publisher redemption page.</li><li>Sign in using the official account system, then locate the code redemption option.</li><li>Enter the code exactly as shown and confirm. Check in-game mail or inventory for rewards.</li></ol><p>Redemption steps vary by game, region, and platform. Use the publisher's official instructions if these steps differ.</p></div>
         </section>
-        ${expiredCodes.length ? `<section class="code-panel expired-panel"><div class="panel-heading"><div><div class="eyebrow">ARCHIVE</div><h2>Expired <span>examples</span></h2></div></div><div class="code-table-wrap"><table class="code-table"><thead><tr><th>CODE</th><th>EXAMPLE REWARD</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>${expiredCodes.map((entry) => codeRow(entry, game)).join("")}</tbody></table></div></section>` : ""}
+        ${expiredCodes.length ? `<section class="code-panel expired-panel"><div class="panel-heading"><div><div class="eyebrow">ARCHIVE</div><h2>Expired <span>codes</span></h2></div></div><div class="code-table-wrap"><table class="code-table"><thead><tr><th>CODE</th><th>REWARD</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>${expiredCodes.map((entry) => codeRow(entry, game)).join("")}</tbody></table></div></section>` : ""}
         ${similarGames.length ? `<section class="cross-promo"><div class="section-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> MORE WORLDS TO EXPLORE</div><h2>Playing ${escapeHtml(game.name)}? <span>You might also like these RPGs:</span></h2></div></div><div class="recommendation-grid">${similarGames.map(recommendationCard).join("")}</div><p class="recommendation-note">Recommendations are editorial picks. Affiliate offers appear only when a real partner link and offer terms are configured.</p></section>` : ""}
         ${related.length ? `<section class="related-section"><div class="section-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> LEVEL UP YOUR KNOW-HOW</div><h2>Related <span>guides</span></h2></div></div><div class="article-grid article-grid-related">${related.map((article) => articleCard(article)).join("")}</div></section>` : ""}
-      </div><aside class="game-sidebar"><div class="starter-card starter-card-${escapeHtml(game.slug)}"><div class="starter-icon">${icon("spark", 22)}</div><div class="eyebrow">${hasVerifiedPartnerOffer ? "VERIFIED PARTNER OFFER" : game.affiliateUrl ? "OFFICIAL PARTNER LINK" : "READY, PLAYER ONE?"}</div><h2>${hasVerifiedPartnerOffer ? "Claim your starter " : "Get in the game. "}<span>${hasVerifiedPartnerOffer ? "bonus." : "the legit way."}</span></h2><p>${hasVerifiedPartnerOffer ? escapeHtml(game.offer.description) : game.affiliateUrl ? "Continue to the official publisher through our partner link. Your game and account are waiting." : game.officialUrl ? `Head to the official ${escapeHtml(game.name)} destination and jump into the game.` : beginnerGuide ? `New to ${escapeHtml(game.name)}? Start with our beginner guide and jump into the action.` : `Explore player resources for ${escapeHtml(game.name)}.`}</p><ul class="starter-benefits">${starterBenefits.map((benefit) => `<li>${icon("check", 14)}<span>${escapeHtml(benefit)}</span></li>`).join("")}</ul>${affiliateCta}<span class="starter-fineprint">${hasVerifiedPartnerOffer ? "Partner offer · check eligibility and terms." : game.affiliateUrl ? "Partner destination · publisher terms apply." : game.officialUrl ? "Official game destination · start playing today." : "Start with a player guide, then explore the game."}</span></div><div class="sidebar-note"><strong>Keep it legit</strong><p>Examples on this page are not live codes. Verify rewards with the publisher before redeeming.</p></div></aside></div>
+      </div><aside class="game-sidebar"><div class="starter-card starter-card-${escapeHtml(game.slug)}"><div class="starter-icon">${icon("spark", 22)}</div><div class="eyebrow">${hasVerifiedPartnerOffer ? "VERIFIED PARTNER OFFER" : game.affiliateUrl ? "OFFICIAL PARTNER LINK" : "READY, PLAYER ONE?"}</div><h2>${hasVerifiedPartnerOffer ? "Claim your starter " : "Get in the game. "}<span>${hasVerifiedPartnerOffer ? "bonus." : "the legit way."}</span></h2><p>${hasVerifiedPartnerOffer ? escapeHtml(game.offer.description) : game.affiliateUrl ? "Continue to the official publisher through our partner link. Your game and account are waiting." : game.officialUrl ? `Head to the official ${escapeHtml(game.name)} destination and jump into the game.` : beginnerGuide ? `New to ${escapeHtml(game.name)}? Start with our beginner guide and jump into the action.` : `Explore player resources for ${escapeHtml(game.name)}.`}</p><ul class="starter-benefits">${starterBenefits.map((benefit) => `<li>${icon("check", 14)}<span>${escapeHtml(benefit)}</span></li>`).join("")}</ul>${affiliateCta}<span class="starter-fineprint">${hasVerifiedPartnerOffer ? "Partner offer · check eligibility and terms." : game.affiliateUrl ? "Partner destination · publisher terms apply." : game.officialUrl ? "Official game destination · start playing today." : "Start with a player guide, then explore the game."}</span></div><div class="sidebar-note"><strong>Keep it legit</strong><p>Only redeem codes through the official game or publisher site, and never share your password.</p></div></aside></div>
     `, "games");
   }
 
@@ -405,14 +414,14 @@
       ${index === 1 && game ? `<a class="inline-code-widget" href="${gameUrl(game)}"><span class="widget-icon">${icon("spark", 20)}</span><span><strong>Looking for ${escapeHtml(game.name)} rewards?</strong><small>Visit the ${escapeHtml(game.name)} codes page. Sample entries are not live-verified.</small></span><span class="widget-arrow">${icon("arrow", 17)}</span></a>` : ""}
       </section>`).join("");
     const beginner = article.category === "Beginner Guides";
-    const starterCta = beginner ? `<aside class="article-cta"><div class="starter-icon">${icon("spark", 21)}</div><div><span class="eyebrow">START YOUR JOURNEY</span><h3>Ready to try ${escapeHtml(game ? game.name : "this game")}?</h3><p>Browse game-specific resources. Any sample rewards are clearly labeled and not live offers.</p></div>${game && game.affiliateUrl ? `<a class="button button-gold" href="${escapeHtml(game.affiliateUrl)}" rel="sponsored nofollow" data-affiliate="${escapeHtml(game.slug)}">CLAIM PARTNER OFFER ${icon("arrow", 15)}</a>` : `<a class="button button-gold" href="${game ? gameUrl(game) : "/games/"}">BROWSE GAME CODES ${icon("arrow", 15)}</a>`}</aside>` : "";
+    const starterCta = beginner ? `<aside class="article-cta"><div class="starter-icon">${icon("spark", 21)}</div><div><span class="eyebrow">START YOUR JOURNEY</span><h3>Ready to try ${escapeHtml(game ? game.name : "this game")}?</h3><p>Browse game-specific resources and the latest working codes.</p></div>${game && game.affiliateUrl ? `<a class="button button-gold" href="${escapeHtml(game.affiliateUrl)}" rel="sponsored nofollow" data-affiliate="${escapeHtml(game.slug)}">CLAIM PARTNER OFFER ${icon("arrow", 15)}</a>` : `<a class="button button-gold" href="${game ? gameUrl(game) : "/games/"}">BROWSE GAME CODES ${icon("arrow", 15)}</a>`}</aside>` : "";
     app.innerHTML = shell(`
       <div class="breadcrumbs"><a href="/">Home</a><span>/</span><a href="/blog/">Guides</a><span>/</span><span>${escapeHtml(article.category)}</span></div>
       <article class="article-page">
         <header class="article-header"><a class="article-category" href="/blog/">${escapeHtml(article.category)}</a><h1>${escapeHtml(article.title)}</h1><p>${escapeHtml(article.excerpt)}</p><div class="article-byline"><span class="author-avatar">LV</span><span>LootVault Editorial</span><i>·</i><span>${escapeHtml(article.readTime)}</span><i>·</i><span>Independent guide</span></div></header>
         <div class="article-layout"><div class="article-body"><div class="sample-notice article-notice"><span>i</span><p>This guide is general player information, not an official publisher announcement. Game details can change between updates.</p></div><p class="article-intro">${escapeHtml(article.intro)}</p>${starterCta}${sections}
           <div class="article-end"><span class="eyebrow">KEEP EXPLORING</span><h2>Make your next move.</h2><a class="button button-primary" href="${game ? gameUrl(game) : "/games/"}">${game ? `${escapeHtml(game.name)} codes page` : "Browse all games"} ${icon("arrow", 15)}</a></div>
-        </div><aside class="article-aside"><div class="aside-sticky"><div class="aside-game-card"><div class="game-cover game-art game-art-${escapeHtml(game ? game.slug : "lootvault")}" style="--game-color:${game ? game.color : "#00e5ff"}"><span>${escapeHtml(game ? game.initials : "LV")}</span><i></i></div><span class="eyebrow">YOUR GAME</span><strong>${escapeHtml(game ? game.name : "LootVault")}</strong><p>Explore the dedicated game page and related player resources.</p><a class="text-link" href="${game ? gameUrl(game) : "/games/"}">View game page ${icon("arrow", 14)}</a></div><div class="aside-disclosure"><strong>How this site works</strong><p>We label sample data clearly. See our <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p></div></div></aside></div>
+        </div><aside class="article-aside"><div class="aside-sticky"><div class="aside-game-card"><div class="game-cover game-art game-art-${escapeHtml(game ? game.slug : "lootvault")}${photoAttrs(game).cls}" style="--game-color:${game ? game.color : "#00e5ff"}${photoAttrs(game).style}"><span>${escapeHtml(game ? game.initials : "LV")}</span><i></i></div><span class="eyebrow">YOUR GAME</span><strong>${escapeHtml(game ? game.name : "LootVault")}</strong><p>Explore the dedicated game page and related player resources.</p><a class="text-link" href="${game ? gameUrl(game) : "/games/"}">View game page ${icon("arrow", 14)}</a></div><div class="aside-disclosure"><strong>How this site works</strong><p>We show when code lists were last checked. See our <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p></div></div></aside></div>
       </article>
     `, "blog");
   }
@@ -448,7 +457,7 @@
       title: "Affiliate disclosure",
       intro: "Transparency matters. This prototype does not currently use affiliate links or receive commissions.",
       sections: [
-        ["Current status", "No partner URLs, paid placements, or affiliate tracking integrations are configured in this demo. Any starter-offer area is clearly marked as pending, and sample rewards are not live promotions.", "A future version may use affiliate links. If it does, links will be clearly identified and marked with appropriate sponsored and nofollow attributes. A commission would not increase the price you pay, but the partner's terms would apply."],
+        ["Current status", "No partner URLs, paid placements, or affiliate tracking integrations are configured in this demo. Any starter-offer area is clearly marked as pending, and rewards shown on the site come from the publishers' own announcements.", "A future version may use affiliate links. If it does, links will be clearly identified and marked with appropriate sponsored and nofollow attributes. A commission would not increase the price you pay, but the partner's terms would apply."],
         ["Editorial independence", "A commercial relationship should never be presented as an independently verified game reward. We will identify paid placements, explain material eligibility conditions, and avoid guaranteed-value claims unless they are supported by the publisher's current terms.", "Always check the linked publisher's official offer page for availability, region, account eligibility, and expiration before signing up."]
       ]
     }

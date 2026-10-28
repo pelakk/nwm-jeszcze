@@ -19,31 +19,178 @@
     { slug: "clash-royale", name: "Clash Royale", genre: "Strategy", platform: "Mobile", color: "#86baff", initials: "CR" },
     { slug: "honkai-impact-3rd", name: "Honkai Impact 3rd", genre: "Action RPG", platform: "PC · Mobile", color: "#e39bb8", initials: "HI3" },
     { slug: "dislyte", name: "Dislyte", genre: "Turn-based RPG", platform: "PC · Mobile", color: "#b29aff", initials: "D" },
-    { slug: "evony", name: "Evony: The King's Return", genre: "Strategy MMO", platform: "Mobile · PC", color: "#dcb576", initials: "E" }
   ];
+
+  const codesCheckedOn = "Oct 28, 2026";
+  const a = (code, reward, extra = {}) => ({ code, reward, status: "active", verified: true, ...extra });
+  const n = (code, reward, extra = {}) => ({ code, reward, status: "new", verified: true, ...extra });
+  const np = (code, reward) => ({ code, reward, status: "active", verified: true, type: "new-only" });
+  const x = (code, reward) => ({ code, reward, status: "expired" });
 
   const codeSets = {
     "genshin-impact": [
-      { code: "DEMO-PRIMOGEM-26", reward: "Sample reward — replace with a verified offer", status: "new", type: "sample" },
-      { code: "DEMO-ADVENTURE-26", reward: "Sample reward — replace with a verified offer", status: "active", type: "sample" },
-      { code: "DEMO-NEW-PLAYER", reward: "Illustrative new-player offer", status: "active", type: "new-only" },
-      { code: "DEMO-EXPIRED-01", reward: "Expired sample entry", status: "expired", type: "sample" }
+      n("NEEIJB764CA3", "60 Primogems, 5 Adventurer's EXP"),
+      n("6LS3F3LS5K87", "20 Primogems, 160 Geode of Replication"),
+      a("OPERACOLLAB", "30 Primogems, 2 Hero's Wit, 20,000 Mora"),
+      a("VesnaOnPatrol", "40 Primogems, 3 Hero's Wit, 20,000 Mora"),
+      a("EPIC2026", "40 Primogems, 5 Hero's Wit, 20,000 Mora"),
+      a("GENSHINGIFT", "50 Primogems, 3 Hero's Wit"),
+      x("HourofRuin", "100 Primogems, 10 Mystic Enhancement Ore"),
+      x("ExpertMitya", "100 Primogems, 5 Hero's Wit"),
+      x("PhotoTime", "100 Primogems, 50,000 Mora")
     ],
     "honkai-star-rail": [
-      { code: "DEMO-TRAILBLAZE-26", reward: "Sample reward — replace with a verified offer", status: "new", type: "sample" },
-      { code: "DEMO-EXPRESS-26", reward: "Sample reward — replace with a verified offer", status: "active", type: "sample" },
-      { code: "DEMO-EXPIRED-02", reward: "Expired sample entry", status: "expired", type: "sample" }
+      a("DSLSPNBREASP", "50 Stellar Jade, 10,000 Credits"),
+      a("PEARLAPPRAISE", "3 Traveler's Guides, 2 Cold Jokes"),
+      a("OMEGA", "60 Stellar Jade, 1 Fuel"),
+      a("CREATIONNYMPH", "60 Stellar Jade, 1 Fuel, 1 Heroic Variable"),
+      a("FAREWELL", "60 Stellar Jade, 1 Fuel"),
+      a("STARRAILGIFT", "100 Stellar Jade, 4 Traveler's Guides, 5 Bottled Soda, 50,000 Credits"),
+      a("WAVEFLAIRSTYLE", "3 Traveler's Guides, 2 Speeding Jet Surfboard"),
+      a("SunsweptRobin", "3 Traveler's Guides, 2 Classic SoulGlad")
+    ],
+    "zenless-zone-zero": [
+      n("LEVELUP33", "20 Polychrome, 2,222 Denny"),
+      n("INKSHIFT33", "20 Polychrome, 2,222 Denny"),
+      n("HOLLOWRUN33", "20 Polychrome, 2,222 Denny"),
+      a("ZENLESSGIFT", "50 Polychrome, 2 Official Investigator Logs, 3 W-Engine Power Supply, 1 Bangboo Algorithm Module"),
+      a("SUNBRINGER", "30 Polychrome"),
+      a("ZZZINK32", "20 Polychrome, 2,222 Denny"),
+      a("ZZZVOID32", "20 Polychrome, 2,222 Denny"),
+      a("ZZZGRIND32", "20 Polychrome, 2,222 Denny")
+    ],
+    "wuthering-waves": [
+      a("WUTHERINGGIFT", "50 Astrite, 2 Premium Resonance Potions, 2 Medium Revival Inhalers, 2 Medium Energy Bags, 15,000 Shell Credits"),
+      x("FALLINGSANCTUM", "Livestream reward"),
+      x("FINDSENTINEL", "Livestream reward"),
+      x("WAKINGMOON", "Livestream reward")
     ],
     "raid-shadow-legends": [
-      { code: "DEMO-CHAMPION-26", reward: "Sample reward — replace with a verified offer", status: "new", type: "sample" },
-      { code: "DEMO-ARENA-26", reward: "Sample reward — replace with a verified offer", status: "active", type: "sample" },
-      { code: "DEMO-EXPIRED-03", reward: "Expired sample entry", status: "expired", type: "sample" }
+      n("2GTFALLFORTUNE", "4-Star Chicken, 300,000 Silver, 150 Energy, 20 XP Brews, 30 Multi-Battles"),
+      a("RAIDAutumn", "5-Star Chicken, Silver"),
+      a("HAPPYBDAYUDK", "300,000 Silver, 15 Brews, 50 Multi-Battles"),
+      a("DOROTHY", "Full Energy, 4-Star Chicken"),
+      a("TOALLFROMMID", "100 Energy, 30 Brews, 300,000 Silver"),
+      a("raidwebstore", "5 Energy Potions, 500,000 Silver, 5-Star Chicken"),
+      a("RAID450K", "15 XP Brews, 1 Epic Skill Tome, 2 Energy Potions, 450,000 Silver"),
+      a("RAIDTOGETHER", "15 XP Brews, 500,000 Silver, 200 Energy"),
+      np("BOORAID", "Skartorsis (Legendary), 300,000 Silver, 15 Force Brews, 15 Greater Force Potions"),
+      np("LEGENDORTREAT", "Bad-el-Kazar (Legendary Champion)"),
+      np("GETLOKI", "Loki the Deceiver, 300,000 Silver, 15 Spirit Brews, 15 Greater Spirit Potions"),
+      np("GETFENSHI25", "Fenshi, 200,000 Silver, 10 XP Brews, 40 Potions"),
+      np("2QLRAID", "Luthiea, 150,000 Silver, 15 XP Brews, 20 Multi-Battles, 1 Energy Refill")
     ],
     "whiteout-survival": [
-      { code: "DEMO-SURVIVOR-26", reward: "Sample reward — replace with a verified offer", status: "new", type: "sample" },
-      { code: "DEMO-WINTER-26", reward: "Sample reward — replace with a verified offer", status: "active", type: "sample" },
-      { code: "DEMO-EXPIRED-04", reward: "Expired sample entry", status: "expired", type: "sample" }
+      a("gogoWOS", "500 Gems, 10,000 Hero XP, 2 Gold Keys, 20 5-min General Speedups"),
+      a("1stYoutubeKR", "500 Gems, 50,000 Hero XP, 1h Training Speedup, 1h Research Speedup, resource pack"),
+      a("2ndYoutubeKR", "500 Gems, 100 Chief Stamina, 3 1h General Speedups, 200 Enhancement XP, resource pack"),
+      a("GuDokYTKOR", "500 Gems, 100 Chief Stamina, 3 1h General Speedups, 200 Enhancement XP, resource packs"),
+      x("K6ZbjAXK6", "Gift code reward"),
+      x("OFFICIALSTORE", "Gift code reward")
+    ],
+    "rise-of-kingdoms": [
+      n("ROK2026666", "100 Silver Keys (until Oct 31)"),
+      n("9i6YZTNMHJ", "1 Gold Key, 500 Gems, 3 60-min Speedups, Lv. 6 Tome of Knowledge (until Oct 31)"),
+      a("rokworld26", "1 Golden Key, 1 Silver Key, 2-3h Speedups, XP"),
+      a("PLAYROK4PC", "1 Golden Key, 90s Universal Speedup, Lv. 5 Tome of Knowledge (PC only)")
+    ],
+    "afk-journey": [
+      n("VMj522yLkrKDa", "20 Hero Invite Letters, 100,000 Gold (until Oct 31)"),
+      a("6kMtRBeUa5nh", "3,000 Diamonds"),
+      a("AFKJ2YRS2026", "20 Epic Invite Letters, 100,000 Gold"),
+      a("H7PDTYNR61", "1,000 Diamonds, 5 Epic Invite Letters, 20,000 Gold"),
+      a("ZC1JJ3UU0N", "1,000 Diamonds, 5 Epic Invite Letters, 20,000 Gold"),
+      a("4iYTsNbdXC", "1,000 Diamonds, 5 Tickets, 20,000 Gold"),
+      a("AFKJ10", "10 Summon Tickets")
+    ],
+    "roblox": [
+      a("SPIDERCOLA", "Spider Cola shoulder accessory (redeem at roblox.com/redeem)"),
+      a("DIY", "Kinetic Staff (in Island of Move)"),
+      a("GetMoving", "Speedy Shades (in Island of Move)"),
+      a("SettingTheStage", "Build It Backpack (in Island of Move)"),
+      a("Glimmer", "Head Slime hat (in Mansion of Wonder)"),
+      a("FXArtist", "Artist Backpack (in Mansion of Wonder)"),
+      x("TWEETROBLOX", "The Bird Says shoulder accessory")
+    ],
+    "lords-mobile": [
+      n("CYBERTRON26", "200 Artifact Coins, 2,000 Energy, 3h Speed Up, 3h Research Speed Up, Relocator (until Oct 31)"),
+      a("LMXTRANSFORMERSGO", "500 Artifact Coins, 20 Training Speed Ups (60m)"),
+      a("GREENGLORY", "200 Artifact Coins, 2,000 Energy, 3h Speed Up, 3h Research Speed Up, Relocator"),
+      a("TFRACEWAY", "200 Artifact Coins, 2,000 Energy, 3h Speed Up, 3h Research Speed Up, Relocator"),
+      a("LMGOLDCUP", "500 Artifact Coins, 20 Training Speed Ups (1h)"),
+      a("LMSOCIALMEDIA", "200 Artifact Coins, 2,000 Energy, 3h Speed Up, 3h Research Speed Up, Relocator")
+    ],
+    "state-of-survival": [
+      a("PLAYSOSONPC", "In-game gift rewards (varies)"),
+      a("SOS2026", "In-game gift rewards (varies)"),
+      a("NIGHTINGALE2026", "Biocaps, speed-ups and resource crates"),
+      a("ABYSSALSKIRMISH", "In-game gift rewards (varies)")
+    ],
+    "mobile-legends": [
+      a("se237hey1", "1,000 Diamonds, 10 Miracle Summon Scrolls"),
+      a("es721azy3", "1,000 Diamonds, 10 Miracle Summon Scrolls"),
+      a("k0m3fvyza", "1,000 Diamonds, 10 Miracle Summon Scrolls")
+    ],
+    "summoners-war": [
+      n("OCTSW2026O7J", "3 Wind Scrolls, 100 Energy"),
+      x("WELCOME2KRNGTHP", "Event reward"),
+      x("GAOTO10THSWC2026", "Event reward"),
+      x("L3TSGO2SEOUL14NOV", "Event reward")
+    ],
+    "pokemon-go": [
+      a("ADIDASxPOKEMON", "Adidas shoes (avatar item, until Jan 16, 2027)"),
+      a("FENDIxFRGMTxPOKEMON", "FENDI x FRGMT x Pokémon avatar hoodie"),
+      a("LEGOxPOKEMONGOxBERRIES", "10 Poké Balls, 5 Razz Berries, 5 Pinap Berries, 5 Nanab Berries")
+    ],
+    "call-of-duty-mobile": [
+      n("FREEMYTHICEVENT", "25 Mythic Sigils"),
+      a("BTPAZBZDSX", "Weapon XP"),
+      a("BTONZBZCK5", "Epic Secret Cache"),
+      a("BTORZBZPW6", "Weapon Bundle"),
+      a("BTOJZBZSWW", "Weapon Bundle"),
+      a("BTOFZBZBNU", "500 Credits"),
+      a("BTOCZBZNHX", "50 CP"),
+      a("DCHRZBZ9TE", "Avalanche Crate"),
+      a("DDGDZBZM6J", "Royal Flush Crate"),
+      a("DDGCZBZGJ3", "Trailblazer Crate")
+    ],
+    "clash-of-clans": [],
+    "clash-royale": [
+      a("HEROVALKYRIE", "Valkyrie emote"),
+      a("PRINCESSEVO!", "Frozen & Fearless banner decoration, Freeze! banner frame"),
+      a("MINIONHORDE!", "Singing Minion Horde emote"),
+      a("ROYALEAFFAIR", "Royale Affair Goblin emote"),
+      a("FIREANDICE!!", "Firestorm banner frame, Ember Escape banner decoration"),
+      a("TRUSTYTURRET", "Hero Musketeer emote"),
+      a("WHENHOGSFLY!", "Flying Royal Hogs emote"),
+      a("REINABARRIGA", "Snoring Dragon banner set")
+    ],
+    "honkai-impact-3rd": [
+      n("KS58QWGR8W", "500 Asterite, 1 Stamina Potion, 4 HOHO Vacation Tickets (until Nov 23)"),
+      n("NCU83WRBF2", "500 Asterite, 1 Stamina Potion, 4 HOHO Vacation Tickets (until Nov 17)"),
+      a("TimeAlbum", "100 Crystals"),
+      a("FLAVOR1", "200 Asterite"),
+      a("FLAVOR2", "4 HOHO Vacation Tickets"),
+      a("FLAVOR3", "30,000 Coins"),
+      a("FLAVOR4", "1 Stamina Potion"),
+      a("LBWY2YI5V4", "30 Crystals, 8 HOHO Vacation Tickets, 1 Phase Shifter")
+    ],
+    "dislyte": [
+      a("PlayDislyte", "100 Nexus Crystals, 1 Golden Record"),
+      a("summer2025", "2 Gold Records, 2 Inferno Records, 2 Flow Records, 2 Wild Records")
     ]
+  };
+
+  const codeNotes = {
+    "clash-of-clans": "Clash of Clans has no redeemable promo codes for gems or resources. Supercell only shares occasional official reward links and Supercell Store codes for cosmetics, so avoid any site that promises free gems.",
+    "clash-royale": "Clash Royale codes unlock cosmetics (emotes and banners) and are redeemed on the official Supercell Store, not inside the game. Codes are case-sensitive; include any exclamation marks.",
+    "roblox": "Roblox promo codes give free avatar items, never free Robux. Experience codes must be entered inside the matching Roblox experience.",
+    "pokemon-go": "Pokémon GO codes are redeemed on the official Niantic rewards website (rewards.nianticlabs.com/pokemongo), not in the app.",
+    "mobile-legends": "Mobile Legends codes are redeemed on the official code exchange page using your Game ID and Zone ID. Codes have limited redemption quotas.",
+    "call-of-duty-mobile": "Global codes are redeemed on callofduty.com/redemption with your UID. Garena (Southeast Asia) codes are redeemed in-game.",
+    "raid-shadow-legends": "Purple 'new player' codes only work within 72 hours of creating an account, and only one of them can be redeemed per account.",
+    "whiteout-survival": "On iOS, redeem codes on the official gift code center (wos-giftcode.centurygame.com) with your Player ID.",
+    "summoners-war": "On iOS/PC, redeem codes on the official Hive coupon page with your Hive ID."
   };
 
   const articleData = [
@@ -205,5 +352,5 @@
     }
   ];
 
-  window.LOOTVAULT_DATA = { games, codeSets, articleData };
+  window.LOOTVAULT_DATA = { games, codeSets, codeNotes, codesCheckedOn, articleData };
 })();
