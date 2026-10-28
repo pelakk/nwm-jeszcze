@@ -1,4 +1,4 @@
-# LootVault
+# GameCodeForge
 
 A lightweight, dependency-free prototype for a gaming codes and guides hub.
 
@@ -34,6 +34,6 @@ The root `vercel.json` explicitly selects Vercel's static "Other" setup, disable
 
 This is a prototype, not a live rewards database. All code and reward entries are clearly marked as sample data; they are not current promotions and have not been verified. Replace them with source-checked listings and implement a reliable update/expiry process before publishing.
 
-The 10 article entries are editorial drafts and do **not** yet meet the brief's 1,200-word minimum. Expand and fact-check each article before using the site for an affiliate-program application. No LootVault partner URLs, contact delivery, analytics, community vote aggregation, or live verification service are configured. Favorites and votes remain in the visitor's browser and are not shared across visitors. Recommendation cards therefore link to game pages rather than claiming unconfigured affiliate offers. The contact form intentionally does not send or store messages.
+The 10 article entries are editorial drafts and do **not** yet meet the brief's 1,200-word minimum. Expand and fact-check each article before using the site for an affiliate-program application. No GameCodeForge partner URLs, contact delivery, analytics, community vote aggregation, or live verification service are configured. Favorites and votes remain in the visitor's browser and are not shared across visitors. Recommendation cards therefore link to game pages rather than claiming unconfigured affiliate offers. The contact form intentionally does not send or store messages.
 
 For production SEO, consider generating prerendered HTML and per-route metadata from the content data. The current app updates titles and descriptions in the browser, but serves a shared client-rendered shell for every route.

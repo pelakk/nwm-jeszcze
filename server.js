@@ -55,5 +55,5 @@ http.createServer((request, response) => {
     response.end(request.method === "HEAD" ? undefined : content);
   });
 }).listen(port, () => {
-  console.log(`LootVault is running at http://localhost:${port}`);
+  console.log(`GameCodeForge is running at http://localhost:${port}`);
 });

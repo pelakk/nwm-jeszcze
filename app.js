@@ -28,8 +28,8 @@
     };
     return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] || paths.spark}</svg>`;
   };
-  const vaultStorageKey = "lootvault-my-vault";
-  const voteStorageKey = "lootvault-code-votes";
+  const vaultStorageKey = "gamecodeforge-my-vault";
+  const voteStorageKey = "gamecodeforge-code-votes";
   const readStoredObject = (key) => {
     try {
       const value = JSON.parse(localStorage.getItem(key) || "{}");
@@ -89,9 +89,9 @@
     return `<a class="article-card${featured ? " article-card-featured" : ""}" href="${articleUrl(article)}">
       <span class="article-art${game ? ` game-art game-art-${escapeHtml(game.slug)}` : ""}${photo.cls}" style="--game-color:${game ? game.color : "#00e5ff"}${photo.style}">
         <span class="article-art-tag">${escapeHtml(article.category)}</span><span class="article-art-mark" aria-hidden="true"></span>
-        <span class="article-art-title">${escapeHtml(game ? game.name : "LootVault")}</span>
+        <span class="article-art-title">${escapeHtml(game ? game.name : "GameCodeForge")}</span>
       </span>
-      <span class="article-card-body"><span class="article-card-meta">${escapeHtml(game ? game.name : "LootVault")} <i>·</i> ${escapeHtml(article.readTime)}</span>
+      <span class="article-card-body"><span class="article-card-meta">${escapeHtml(game ? game.name : "GameCodeForge")} <i>·</i> ${escapeHtml(article.readTime)}</span>
       <strong>${escapeHtml(article.title)}</strong><span>${escapeHtml(article.excerpt)}</span>
       <span class="text-link">Read guide ${icon("arrow", 15)}</span></span>
     </a>`;
@@ -181,7 +181,7 @@
     return true;
   };
   const updateMeta = (title, description) => {
-    document.title = `${title} | LootVault`;
+    document.title = `${title} | GameCodeForge`;
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) metaDescription.content = description;
     let canonical = document.querySelector('link[rel="canonical"]');
@@ -195,7 +195,7 @@
   const shell = (content, active = "") => `
     <header class="site-header">
       <div class="header-inner">
-        <a class="brand" href="/" aria-label="LootVault home"><span class="brand-mark">L</span><span>LOOT<span class="brand-accent">VAULT</span></span></a>
+        <a class="brand" href="/" aria-label="GameCodeForge home"><span class="brand-mark">G</span><span>GAMECODE<span class="brand-accent">FORGE</span></span></a>
         <nav class="main-nav" id="main-nav" aria-label="Main navigation">
           <a class="${active === "games" ? "nav-active" : ""}" href="/games/">Games</a>
           <a class="${active === "blog" ? "nav-active" : ""}" href="/blog/">Guides &amp; tier lists</a>${readVault().length ? `<a class="vault-nav-link" href="/#my-vault">${icon("star", 14)}<span>My Vault</span><span class="vault-nav-count">${readVault().length}</span></a>` : ""}
@@ -207,15 +207,15 @@
     <main>${content}</main>
     <footer class="site-footer">
       <div class="footer-main">
-        <div class="footer-brand"><a class="brand" href="/"><span class="brand-mark">L</span><span>LOOT<span class="brand-accent">VAULT</span></span></a><p>Player-first game rewards and guides. Always verify offers with official sources.</p></div>
+        <div class="footer-brand"><a class="brand" href="/"><span class="brand-mark">G</span><span>GAMECODE<span class="brand-accent">FORGE</span></span></a><p>Player-first game rewards and guides. Always verify offers with official sources.</p></div>
         <div class="footer-links"><strong>Explore</strong><a href="/games/">All games</a><a href="/blog/">Guides &amp; tier lists</a><a href="/about-us/">About us</a></div>
         <div class="footer-links"><strong>Information</strong><a href="/contact/">Contact</a><a href="/privacy-policy/">Privacy policy</a><a href="/affiliate-disclosure/">Affiliate disclosure</a></div>
       </div>
-      <div class="footer-bottom"><span>© ${new Date().getFullYear()} LootVault. Independent fan resource.</span><span>Not affiliated with game publishers.</span></div>
+      <div class="footer-bottom"><span>© ${new Date().getFullYear()} GameCodeForge. Independent fan resource.</span><span>Not affiliated with game publishers.</span></div>
     </footer>`;
 
   function renderHome() {
-    updateMeta("Game codes, rewards & guides", "Discover game reward pages, player-first guides, and tier list explainers at LootVault.");
+    updateMeta("Game codes, rewards & guides", "Discover game reward pages, player-first guides, and tier list explainers at GameCodeForge.");
     const popular = games.filter((game) => game.popular).slice(0, 6);
     const latest = articleData.slice(0, 3);
     const featuredCodeRows = games.filter((game) => game.popular).slice(0, 5).map((game) => {
@@ -252,7 +252,7 @@
       </section>
       <section class="section how-it-works" aria-labelledby="how-it-works-title">
         <div class="how-it-works-heading">
-          <div><div class="eyebrow"><span class="eyebrow-line"></span> THE LOOTVAULT LOOP</div><h2 id="how-it-works-title">Find rewards.<br><span>Skip the guesswork.</span></h2></div>
+          <div><div class="eyebrow"><span class="eyebrow-line"></span> THE GAMECODEFORGE LOOP</div><h2 id="how-it-works-title">Find rewards.<br><span>Skip the guesswork.</span></h2></div>
           <p>Go from game page to in-game rewards in three simple steps. Clear labels help you know what you’re looking at before you try a code.</p>
         </div>
         <div class="how-steps">
@@ -418,27 +418,27 @@
     app.innerHTML = shell(`
       <div class="breadcrumbs"><a href="/">Home</a><span>/</span><a href="/blog/">Guides</a><span>/</span><span>${escapeHtml(article.category)}</span></div>
       <article class="article-page">
-        <header class="article-header"><a class="article-category" href="/blog/">${escapeHtml(article.category)}</a><h1>${escapeHtml(article.title)}</h1><p>${escapeHtml(article.excerpt)}</p><div class="article-byline"><span class="author-avatar">LV</span><span>LootVault Editorial</span><i>·</i><span>${escapeHtml(article.readTime)}</span><i>·</i><span>Independent guide</span></div></header>
+        <header class="article-header"><a class="article-category" href="/blog/">${escapeHtml(article.category)}</a><h1>${escapeHtml(article.title)}</h1><p>${escapeHtml(article.excerpt)}</p><div class="article-byline"><span class="author-avatar">GF</span><span>GameCodeForge Editorial</span><i>·</i><span>${escapeHtml(article.readTime)}</span><i>·</i><span>Independent guide</span></div></header>
         <div class="article-layout"><div class="article-body"><div class="sample-notice article-notice"><span>i</span><p>This guide is general player information, not an official publisher announcement. Game details can change between updates.</p></div><p class="article-intro">${escapeHtml(article.intro)}</p>${starterCta}${sections}
           <div class="article-end"><span class="eyebrow">KEEP EXPLORING</span><h2>Make your next move.</h2><a class="button button-primary" href="${game ? gameUrl(game) : "/games/"}">${game ? `${escapeHtml(game.name)} codes page` : "Browse all games"} ${icon("arrow", 15)}</a></div>
-        </div><aside class="article-aside"><div class="aside-sticky"><div class="aside-game-card"><div class="game-cover game-art game-art-${escapeHtml(game ? game.slug : "lootvault")}${photoAttrs(game).cls}" style="--game-color:${game ? game.color : "#00e5ff"}${photoAttrs(game).style}"><span>${escapeHtml(game ? game.initials : "LV")}</span><i></i></div><span class="eyebrow">YOUR GAME</span><strong>${escapeHtml(game ? game.name : "LootVault")}</strong><p>Explore the dedicated game page and related player resources.</p><a class="text-link" href="${game ? gameUrl(game) : "/games/"}">View game page ${icon("arrow", 14)}</a></div><div class="aside-disclosure"><strong>How this site works</strong><p>We show when code lists were last checked. See our <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p></div></div></aside></div>
+        </div><aside class="article-aside"><div class="aside-sticky"><div class="aside-game-card"><div class="game-cover game-art game-art-${escapeHtml(game ? game.slug : "gamecodeforge")}${photoAttrs(game).cls}" style="--game-color:${game ? game.color : "#00e5ff"}${photoAttrs(game).style}"><span>${escapeHtml(game ? game.initials : "GF")}</span><i></i></div><span class="eyebrow">YOUR GAME</span><strong>${escapeHtml(game ? game.name : "GameCodeForge")}</strong><p>Explore the dedicated game page and related player resources.</p><a class="text-link" href="${game ? gameUrl(game) : "/games/"}">View game page ${icon("arrow", 14)}</a></div><div class="aside-disclosure"><strong>How this site works</strong><p>We show when code lists were last checked. See our <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p></div></div></aside></div>
       </article>
     `, "blog");
   }
 
   const staticPages = {
     "/about-us/": {
-      title: "About LootVault",
+      title: "About GameCodeForge",
       intro: "A clearer, more useful home for players looking for game rewards and practical guides.",
       sections: [
-        ["What we do", "LootVault is an independent game resource concept built around reward-code pages, player guides, and straightforward explanations. We want game information to be easy to scan, useful on mobile, and honest about what has—and has not—been verified.", "This demo contains sample game entries, illustrative codes, and editorial examples. The sample codes are not real offers, and the site does not currently have live code verification or publisher partnerships."],
-        ["Our approach", "We aim to identify the game and context for every listing, distinguish active information from archived entries, and direct players to official publisher sources for account actions. Guide recommendations should explain assumptions rather than promise guaranteed results.", "Game titles and marks belong to their respective owners. LootVault is an independent fan resource and is not affiliated with or endorsed by game publishers."],
+        ["What we do", "GameCodeForge is an independent game resource built around reward-code pages, player guides, and straightforward explanations. We want game information to be easy to scan, useful on mobile, and honest about what has—and has not—been verified.", "Codes are compiled from publisher announcements and public trackers, and every list shows when it was last checked. Codes can expire without notice, and the site does not have publisher partnerships."],
+        ["Our approach", "We aim to identify the game and context for every listing, distinguish active information from archived entries, and direct players to official publisher sources for account actions. Guide recommendations should explain assumptions rather than promise guaranteed results.", "Game titles and marks belong to their respective owners. GameCodeForge is an independent fan resource and is not affiliated with or endorsed by game publishers."],
         ["Before launch", "Live reward data, editorial review, contact handling, and any partner placements must be configured and verified before this prototype is used as a production service.", "If you find a problem in a future live listing, use the contact page once a verified contact channel is published."]
       ]
     },
     "/contact/": {
       title: "Contact",
-      intro: "We welcome corrections, feedback, and questions about LootVault.",
+      intro: "We welcome corrections, feedback, and questions about GameCodeForge.",
       sections: [
         ["Corrections and feedback", "This prototype does not yet have a connected contact inbox, so messages submitted here will not be delivered. A verified contact address or form handler must be configured before launch.", "For account, payment, or redemption problems, contact the game's publisher through its official support channels. Never send your password, recovery codes, or payment details to a game-code website."],
         ["Business inquiries", "Partner and advertising inquiries should include the relevant game, a public company contact, and the terms of the proposed offer. We will not publish a promotion until the destination, eligibility, and reward details have been checked."]
@@ -448,9 +448,9 @@
       title: "Privacy policy",
       intro: "This prototype is designed to work without accounts, analytics, or advertising trackers.",
       sections: [
-        ["Information this demo uses", "LootVault does not ask you to create an account or provide personal information. Favorites and code-vote selections are stored locally in your browser and are not sent to LootVault or shared with other visitors. The demo has no analytics integration.", "If you use the copy-code button, the selected sample code is sent to your browser's clipboard only after you click. This site does not receive a copy of that value. Affiliate-link clicks, when links are configured, are counted locally in your browser only."],
+        ["Information this site uses", "GameCodeForge does not ask you to create an account or provide personal information. Favorites and code-vote selections are stored locally in your browser and are not sent to GameCodeForge or shared with other visitors. The site has no analytics integration.", "If you use the copy-code button, the selected code is sent to your browser's clipboard only after you click. This site does not receive a copy of that value. Affiliate-link clicks, when links are configured, are counted locally in your browser only."],
         ["Future services", "Before production launch, this policy must be updated to describe any hosting logs, analytics, contact forms, cookies, affiliate reporting, or other services actually enabled. We will not claim that a service is active until it has been configured.", "If a future version stores or shares personal information, this page should explain what is collected, why, how long it is kept, and how users can exercise applicable privacy rights."],
-        ["External websites", "Links to game publishers or other websites may have their own privacy policies and terms. Review those policies before using an external service. LootVault is not responsible for the practices of independent publishers or third parties."]
+        ["External websites", "Links to game publishers or other websites may have their own privacy policies and terms. Review those policies before using an external service. GameCodeForge is not responsible for the practices of independent publishers or third parties."]
       ]
     },
     "/affiliate-disclosure/": {
@@ -466,7 +466,7 @@
   function renderStatic(page) {
     updateMeta(page.title, page.intro);
     app.innerHTML = shell(`
-      <section class="page-hero static-hero"><div class="eyebrow"><span class="eyebrow-line"></span> LOOTVAULT / INFORMATION</div><h1>${escapeHtml(page.title)}</h1><p>${escapeHtml(page.intro)}</p></section>
+      <section class="page-hero static-hero"><div class="eyebrow"><span class="eyebrow-line"></span> GAMECODEFORGE / INFORMATION</div><h1>${escapeHtml(page.title)}</h1><p>${escapeHtml(page.intro)}</p></section>
       <article class="static-content">${page.sections.map(([heading, ...paragraphs]) => `<section><h2>${escapeHtml(heading)}</h2>${paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}</section>`).join("")}${location.pathname === "/contact/" ? '<form id="contact-form" class="contact-form"><label for="contact-message">Your message</label><textarea id="contact-message" name="message" rows="4" placeholder="Contact delivery is not configured in this demo." required></textarea><button class="button button-primary" type="submit">Send message ${icon("arrow", 15)}</button><p class="form-note">The form is visual only; no message will be sent.</p></form>' : ""}</article>
     `);
     const contactForm = document.querySelector("#contact-form");
@@ -567,7 +567,7 @@
     const affiliateLink = event.target.closest("[data-affiliate]");
     if (affiliateLink) {
       try {
-        const key = `lootvault-affiliate-clicks:${affiliateLink.dataset.affiliate}`;
+        const key = `gamecodeforge-affiliate-clicks:${affiliateLink.dataset.affiliate}`;
         localStorage.setItem(key, String(Number(localStorage.getItem(key) || "0") + 1));
       } catch {
         showToast("Your browser blocked local click measurement.");
