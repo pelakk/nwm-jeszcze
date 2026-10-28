@@ -12,6 +12,10 @@ npm start
 
 Open [http://localhost:4173](http://localhost:4173). Set the `PORT` environment variable to use another port.
 
+## Deploy to Vercel
+
+The root `vercel.json` explicitly selects Vercel's static "Other" setup, disables automatic build-command detection, publishes the project root as static output, and rewrites SPA routes to `index.html`. This prevents the browser-side `app.js` from being invoked as a serverless function.
+
 ## Included
 
 - Responsive homepage with live game/article search (starts at two characters)
