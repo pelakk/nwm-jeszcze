@@ -1,0 +1,9 @@
+{
+  "name": "lootvault-game-hub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A lightweight gaming codes and guides hub prototype.",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
