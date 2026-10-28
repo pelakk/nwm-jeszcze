@@ -241,6 +241,35 @@
         </aside>
         <div class="hero-bottom"><span>SCROLL TO EXPLORE</span><span class="hero-bottom-line"></span><span>20 GAMES · SAMPLE DATA</span></div>
       </section>
+      <section class="section how-it-works" aria-labelledby="how-it-works-title">
+        <div class="how-it-works-heading">
+          <div><div class="eyebrow"><span class="eyebrow-line"></span> THE LOOTVAULT LOOP</div><h2 id="how-it-works-title">Find rewards.<br><span>Skip the guesswork.</span></h2></div>
+          <p>Go from game page to in-game rewards in three simple steps. Clear labels help you know what you’re looking at before you try a code.</p>
+        </div>
+        <div class="how-steps">
+          <article class="how-step">
+            <div class="how-step-visual how-step-visual-search">
+              <span class="how-step-number">01</span>
+              <div class="how-search-art">${icon("search", 28)}<span>20+ GAME PAGES</span></div>
+            </div>
+            <div class="how-step-copy"><span>START HERE</span><h3>Pick your game</h3><p>Search the directory for your game’s reward page, codes, and player guides.</p></div>
+          </article>
+          <article class="how-step">
+            <div class="how-step-visual how-step-visual-check">
+              <span class="how-step-number">02</span>
+              <div class="how-status-art"><span>ENTRY DETAILS</span><strong><i></i> Reward &amp; status labels</strong><small>Check eligibility before redeeming</small></div>
+            </div>
+            <div class="how-step-copy"><span>KNOW BEFORE YOU CLAIM</span><h3>Check the details</h3><p>Review the reward, eligibility, and status. Demo entries are clearly labeled—not passed off as live codes.</p></div>
+          </article>
+          <article class="how-step">
+            <div class="how-step-visual how-step-visual-claim">
+              <span class="how-step-number">03</span>
+              <div class="how-claim-art"><code>YOUR CODE</code><span>${icon("copy", 15)} COPY CODE</span><small>Redeem through the official game</small></div>
+            </div>
+            <div class="how-step-copy"><span>BACK IN THE GAME</span><h3>Redeem with confidence</h3><p>Copy a code when available, then follow the game’s official redemption steps to claim your reward.</p></div>
+          </article>
+        </div>
+      </section>
       <section class="section section-trending">
         <div class="section-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> START EXPLORING</div><h2>Popular <span>games</span></h2></div><a class="text-link" href="/games/">View all games ${icon("arrow", 16)}</a></div>
         <div class="game-grid">${popular.map((game) => gameCard(game)).join("")}</div>
